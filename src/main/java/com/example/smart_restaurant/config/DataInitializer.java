@@ -21,6 +21,7 @@ public class DataInitializer {
 
             // Sample Menu Items
             if (menuRepo.count() == 0) {
+                menuRepo.deleteAll();
                 menuRepo.save(new MenuItem(
                     "Truffle Mushroom Pasta", 
                     "Creamy fettuccine with wild forest mushrooms and aromatic white truffle oil.", 
