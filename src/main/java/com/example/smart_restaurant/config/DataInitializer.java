@@ -26,7 +26,7 @@ public class DataInitializer {
                     "Creamy fettuccine with wild forest mushrooms and aromatic white truffle oil.", 
                     340.0, 
                     "Main Course", 
-                    "https://images.unsplash.com/photo-1621996346565-e3d5d6281724?w=500"
+                    "https://images.unsplash.com/photo-1621996346565-e3d5d6281691?auto=format&fit=crop&w=800&q=80"
                 ));
                 menuRepo.save(new MenuItem(
                     "Artisan Wood-Fired Margherita", 
@@ -40,7 +40,7 @@ public class DataInitializer {
                     "Lightly seasoned crisp rings served with roasted garlic aioli dip.", 
                     220.0, 
                     "Starters", 
-                    "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500"
+                    "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80"
                 ));
                 menuRepo.save(new MenuItem(
                     "Classic Iced Berry Mojito", 
