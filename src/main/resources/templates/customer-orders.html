@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Restaurant - Live Kitchen Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body {
+            background: #fafaf9;
+            color: #1c1917;
+            min-height: 100vh;
+            padding: 36px 24px 60px;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        /* Top Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            color: #1c1917;
+        }
+
+        .page-title p {
+            color: #78716c;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .back-btn {
+            background: #ffffff;
+            color: #ea580c;
+            border: 1.5px solid #ea580c;
+            padding: 9px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #ea580c;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.25);
+        }
+
+        /* Empty State */
+        .empty-state {
+            background: white;
+            padding: 60px 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px dashed #d6d3d1;
+        }
+
+        .empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+        /* Order Card */
+        .order-card {
+            background: #ffffff;
+            border-radius: 22px;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e7e5e4;
+            overflow: hidden;
+            margin-bottom: 28px;
+            transition: transform 0.2s;
+        }
+
+        /* Card Header */
+        .card-header {
+            background: linear-gradient(135deg, #292524 0%, #1c1917 100%);
+            color: white;
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .order-meta h3 {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-pill {
+            background: rgba(234, 88, 12, 0.25);
+            border: 1px solid #ea580c;
+            color: #fdba74;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fef3c7; color: #b45309; }
+        .status-preparing { background: #ffedd5; color: #ea580c; animation: pulse 1.8s infinite; }
+        .status-served { background: #dcfce7; color: #15803d; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        /* Clock / Live Timer Section */
+        .timer-strip {
+            background: linear-gradient(160deg, #ea580c 0%, #c2410c 100%);
+            color: white;
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .clock-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Circular Clock Dial */
+        .clock-dial {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+            position: relative;
+        }
+
+        .clock-dial span {
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .clock-dial small {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .timer-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .timer-info p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .refresh-hint {
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 12px;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Progress Steps */
+        .step-tracker {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 26px 36px 18px;
+            background: #ffffff;
+            border-bottom: 1px solid #f5f5f4;
+        }
+
+        .step-tracker::before {
+            content: "";
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background: #e7e5e4;
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f5f5f4;
+            color: #a8a29e;
+            border: 2px solid #e7e5e4;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .step.done .step-circle {
+            background: #ea580c;
+            color: white;
+            border-color: #ea580c;
+            box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.18);
+        }
+
+        .step-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #78716c;
+        }
+
+        .step.done .step-label {
+            color: #1c1917;
+            font-weight: 700;
+        }
+
+        /* Items Section */
+        .card-body {
+            padding: 24px 28px;
+        }
+
+        .items-heading {
+            font-size: 13px;
+            font-weight: 700;
+            color: #78716c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        .items-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #f5f5f4;
+        }
+
+        .item-name-qty {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-tag {
+            background: #ffedd5;
+            color: #9a3412;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: #1c1917;
+        }
+
+        /* Total Footer */
+        .card-footer {
+            padding: 18px 28px;
+            background: #fafaf9;
+            border-top: 1px solid #e7e5e4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-label {
+            font-size: 13px;
+            color: #78716c;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .total-amount {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ea580c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Top Header -->
+        <header class="page-header">
+            <div class="page-title">
+                <h1>Kitchen Order Tracking</h1>
+                <p>Real-time countdown and kitchen status for your table</p>
+            </div>
+            <a href="/customer/home" class="back-btn">← Order More Food</a>
+        </header>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(orders)}" class="empty-state">
+            <div class="empty-icon">🍽️</div>
+            <h3>No Active Orders Right Now</h3>
+            <p style="color: #78716c; font-size: 13px; margin: 8px 0 18px;">Your table has no pending orders sent to the kitchen.</p>
+            <a href="/customer/home" class="back-btn" style="background: #ea580c; color: white;">Browse Menu</a>
+        </div>
+
+        <!-- Order Cards Loop -->
+        <div th:each="ord : ${orders}" class="order-card">
+            
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="order-meta">
+                    <h3>
+                        Order #<span th:text="${ord.id}"></span>
+                        <span class="table-pill">Table <b th:text="${ord.tableNumber}">1</b></span>
+                    </h3>
+                </div>
+                <div>
+                    <span class="status-badge"
+                          th:classappend="${ord.status == 'PENDING'} ? 'status-pending' : (${ord.status == 'PREPARING'} ? 'status-preparing' : 'status-served')"
+                          th:text="${ord.status}">PENDING</span>
+                </div>
+            </div>
+
+            <!-- Clock Timer Strip -->
+            <div class="timer-strip">
+                <div class="clock-container">
+                    <div class="clock-dial">
+                        <span id="countdownMin">14</span>
+                        <small>Mins</small>
+                    </div>
+                    <div class="timer-info">
+                        <h4>Chef is preparing fresh dishes 👨‍🍳</h4>
+                        <p>Estimated serving countdown: <b id="timerDisplay">14:25</b> mins remaining</p>
+                    </div>
+                </div>
+                <div class="refresh-hint">
+                    ⚡ Live Status Tracker
+                </div>
+            </div>
+
+            <!-- Step-by-Step Progress Bar -->
+            <div class="step-tracker">
+                <div class="step done">
+                    <div class="step-circle">✓</div>
+                    <div class="step-label">Order Received</div>
+                </div>
+                <div class="step done">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">In Kitchen</div>
+                </div>
+                <div class="step" th:classappend="${ord.status == 'SERVED' || ord.status == 'COMPLETED'} ? 'done' : ''">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Ready at Table</div>
+                </div>
+            </div>
+
+            <!-- Ordered Dishes List -->
+            <div class="card-body">
+                <div class="items-heading">Order Summary</div>
+                <ul class="items-list">
+                    <li class="item-row" th:each="it : ${ord.items}">
+                        <div class="item-name-qty">
+                            <span class="qty-tag" th:text="${it.quantity} + 'x'">1x</span>
+                            <span style="font-weight: 600;" th:text="${it.menuItem.name}">Dish Name</span>
+                        </div>
+                        <span class="item-price">₹<span th:text="${#numbers.formatDecimal(it.price, 1, 2)}">0.00</span></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Total Amount Footer -->
+            <div class="card-footer">
+                <div>
+                    <div class="total-label">Total Bill Amount</div>
+                    <small style="color: #a8a29e;">All taxes & service included</small>
+                </div>
+                <div class="total-amount">
+                    ₹<span th:text="${#numbers.formatDecimal(ord.totalAmount, 1, 2)}">0.00</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Live Countdown Script -->
+    <script>
+        let totalSeconds = 14 * 60 + 25; // 14 mins 25 secs default prep timer
+        const timerDisplay = document.getElementById('timerDisplay');
+        const countdownMin = document.getElementById('countdownMin');
+
+        if (timerDisplay && countdownMin) {
+            const interval = setInterval(() => {
+                if (totalSeconds <= 0) {
+                    clearInterval(interval);
+                    timerDisplay.innerText = "00:00 (Your dishes are on the table!)";
+                    countdownMin.innerText = "0";
+                    return;
+                }
+                totalSeconds--;
+                const mins = Math.floor(totalSeconds / 60);
+                const secs = totalSeconds % 60;
+                countdownMin.innerText = mins;
+                timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

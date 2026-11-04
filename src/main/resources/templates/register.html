@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Restaurant - Join Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 10% 20%, rgba(254, 243, 199, 0.5) 0%, rgba(255, 237, 213, 0.3) 90%),
+                        linear-gradient(135deg, #1c1917 0%, #292524 50%, #44403c 100%);
+            padding: 20px;
+        }
+
+        .auth-container {
+            display: flex;
+            width: 100%;
+            max-width: 860px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Left Decorative Brand Banner */
+        .brand-side {
+            flex: 1;
+            background: linear-gradient(160deg, #ea580c 0%, #c2410c 40%, #7c2d12 100%);
+            padding: 48px 36px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .brand-side::after {
+            content: "🍽️";
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 110px;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            width: fit-content;
+        }
+
+        .brand-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 34px;
+            font-weight: 600;
+            line-height: 1.25;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        .brand-content p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .perks {
+            list-style: none;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .perks li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Right Form Side */
+        .form-side {
+            flex: 1.15;
+            padding: 44px 40px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 24px;
+        }
+
+        .form-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1c1917;
+            letter-spacing: -0.5px;
+        }
+
+        .form-header p {
+            color: #78716c;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #44403c;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper span {
+            position: absolute;
+            left: 14px;
+            font-size: 16px;
+            color: #a8a29e;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 11px 14px 11px 40px;
+            background: #fafaf9;
+            border: 1.5px solid #e7e5e4;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #1c1917;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-wrapper input:focus {
+            background: #ffffff;
+            border-color: #ea580c;
+            box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.12);
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(234, 88, 12, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(234, 88, 12, 0.4);
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #78716c;
+        }
+
+        .footer-note a {
+            color: #ea580c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-note a:hover {
+            text-decoration: underline;
+        }
+
+        .error-badge {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+            }
+            .brand-side {
+                padding: 30px;
+            }
+            .form-side {
+                padding: 30px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <!-- Left Side Restaurant Branding -->
+        <div class="brand-side">
+            <div>
+                <div class="brand-badge">✨ Smart Dining</div>
+                <div class="brand-content">
+                    <h1>Reserve, Taste & Enjoy.</h1>
+                    <p>Join our table for seamless contactless ordering, chef specials, and instant reservations.</p>
+                </div>
+            </div>
+
+            <ul class="perks">
+                <li><span>⚡</span> Instant table-side ordering</li>
+                <li><span>🎁</span> Chef's daily recommendation</li>
+                <li><span>💳</span> Seamless and fast checkout</li>
+            </ul>
+        </div>
+
+        <!-- Right Side Form -->
+        <div class="form-side">
+            <div class="form-header">
+                <h2>Create Account</h2>
+                <p>Welcome! Enter your details to start dining.</p>
+            </div>
+
+            <div th:if="${error}" class="error-badge" th:text="${error}"></div>
+
+            <form action="/register" method="post">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <div class="input-wrapper">
+                        <span>👤</span>
+                        <input type="text" name="name" placeholder="Enter Full Name" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <span>✉️</span>
+                        <input type="email" name="email" placeholder="Enter Email Id" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <span>🔒</span>
+                        <input type="password" name="password" placeholder="Create a password" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Confirm Password</label>
+                    <div class="input-wrapper">
+                        <span>🛡️</span>
+                        <input type="password" name="confirmPassword" placeholder="Repeat your password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+
+            <div class="footer-note">
+                Already registered? <a href="/login">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
